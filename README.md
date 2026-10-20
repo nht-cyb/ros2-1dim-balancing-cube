@@ -66,6 +66,13 @@ measured ones. The GIFs above were recorded with perfect state; to reproduce the
 The controller no longer sees the true state. The simulator now outputs what the real
 sensors would, and a new estimator node rebuilds `/joint_states` from them:
 
+![Phase 2: estimated vs true tilt through a jump, a knock-over and a second jump](media/phase2_estimator.gif)
+
+*Simulation with sensors on: the controller only sees the blue estimate. The estimate stays
+on top of the true tilt. The error (bottom) peaks at about 2.5° for an instant during each
+jump and falls back to a few tenths of a degree once
+the cube is balancing (0.22° RMS in this run, settling included).*
+
 - **IMU (MPU6050 model)** at the cube centre, 106 mm from the edge: gyro noise 0.003 rad/s and
   bias 0.02 rad/s (~1.1°/s); accelerometer noise 0.04 m/s² and biases of 0.03 and −0.05 m/s².
   The accelerometer also feels the cube's own centripetal and tangential acceleration.
@@ -292,6 +299,14 @@ work as before.
 
 #### Measured (fake ESP32, 8 cores, 30 s per run, knocked over 4 s after each catch)
 
+![Phase 3: PC loop vs on-board loop under full CPU load](media/phase3_onboard_vs_pc.gif)
+
+*Same fake hardware, same jump-up, all 8 CPU cores busy, played at 2× speed. Left: the PC
+closes the loop and loses the cube right after each catch, so it never gets to be knocked
+over. Right: the ESP32 closes the loop and holds every catch; it is knocked over 3 times and
+jumps back up each time. Purple lines mark pushes, red lines mark brake pulses (jumps).
+This is a separate recording from the table below, and it came out the same way.*
+
 | Run | Jumps | Caught and held | Falls without a push | `/joint_states` gap p95 / max |
 |---|---|---|---|---|
 | On-board, idle PC | 4 | 4 of 4 | 0 | 5.5 / 21 ms |
@@ -414,14 +429,20 @@ src/
     └── test/                 47 offline tests (no ROS or board needed)
 firmware/cubli_esp32/         ESP32 Arduino sketch
 scripts/
-├── record_demo.py            records a live run to .npz
+├── record_demo.py            records a live run to .npz (sim or fake ESP32)
 ├── render_demo_gif.py        draws the demo GIF from a recording
+├── render_results_gif.py     draws the Phase 2 and Phase 3 result GIFs
 ├── tune_controller.py        LQR + filter sweep under noise, delay and pushes
 ├── confirm_tuning.py         re-runs the best tunings with 20 seeds
 └── tune_catch.py             post-jump catch study
 tuning/                       sweep and confirmation results
 media/
 ├── demo_run.npz              Phase 1 recording
+├── phase2_run.npz            Phase 2 recording (estimate + ground truth)
+├── phase2_estimator.gif      rendered from phase2_run.npz
+├── phase3_passthrough.npz    Phase 3 recordings, fake ESP32 with 8 cores busy
+├── phase3_onboard.npz
+├── phase3_onboard_vs_pc.gif  rendered from the two phase3_*.npz
 ├── cubli_demo.gif            rendered from demo_run.npz
 └── cubli_rviz.gif            RViz screen recording
 ```
@@ -488,6 +509,19 @@ Record a new demo GIF (with the launch running in another terminal):
 ```bash
 python3 scripts/record_demo.py media/demo_run.npz        # resets, jumps, pushes over, jumps again
 python3 scripts/render_demo_gif.py media/demo_run.npz media/cubli_demo.gif
+```
+
+Record the Phase 2 and Phase 3 result GIFs:
+
+```bash
+# Phase 2: with cubli_sim.launch.py running
+python3 scripts/record_demo.py media/phase2_run.npz --truth --hold 2.5
+python3 scripts/render_results_gif.py estimator media/phase2_run.npz media/phase2_estimator.gif
+# Phase 3: with cubli_hw.launch.py fake_hardware:=true jump_up:=true [onboard:=true] running;
+# N is the pid the fake ESP32 prints at start-up. Load the CPU with e.g. 8 x `python3 -c 'while 1: pass'`.
+python3 scripts/record_demo.py media/phase3_onboard.npz --fake-pid N --pushes 3 --hold 3 --duration 32
+python3 scripts/render_results_gif.py compare media/phase3_passthrough.npz media/phase3_onboard.npz \
+    media/phase3_onboard_vs_pc.gif --speed 2
 ```
 
 Run the offline tests:
