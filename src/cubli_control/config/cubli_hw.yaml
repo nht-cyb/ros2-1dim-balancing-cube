@@ -1,0 +1,52 @@
+# Real hardware: ESP32 + MPU6050 + Nidec 24H. Values marked MEASURE are placeholders.
+
+cubli_hw_driver:
+  ros__parameters:
+    port: /dev/ttyUSB0        # ESP32 USB serial (often /dev/ttyACM0 on boards with native USB)
+    baud: 460800
+    # Body x = balancing edge axis, body z = edge -> cube centre. For each body axis,
+    # which MPU6050 axis (and sign) it is. Check with: ros2 topic echo /imu/data_raw
+    imu_axes: ['+x', '+y', '+z']
+    encoder_cpr: 400          # MEASURE: counts per wheel turn (4x the encoder's pulses/rev)
+    encoder_sign: 1           # flip to -1 if positive effort makes the encoder count down
+    stall_torque: 0.10        # MEASURE: N m at full effort, wheel stopped
+    no_load_speed: 600.0      # MEASURE: rad/s at full effort, wheel free
+    max_effort: 1.0
+    brake_ms: 300             # brake pulse length for a jump
+    command_timeout: 0.1      # s, send zero effort if the controller goes quiet
+    # onboard_balance (ESP32 runs the balance loop) is set by the launch argument onboard:=true;
+    # it reuses the cubli_controller and cubli_estimator tuning below.
+
+cubli_estimator:
+  ros__parameters:
+    time_constant: 0.5        # s, tuned: complementary filter, gyro below / accelerometer above
+    imu_offset: 0.106         # MEASURE: edge -> IMU distance along body z [m]
+    calib_samples: 200        # keep the cube still for the first second
+    wheel_speed_window: 8
+
+cubli_controller:
+  ros__parameters:
+    control_rate_hz: 200.0
+    max_torque: 0.08          # keep below what the motor can deliver (stall_torque)
+    engage_angle: 0.12        # rad: lift the cube to within ~7 deg of upright by hand
+                              # (0.08 N m holds at most ~9.6 deg against gravity)
+    disengage_angle: 0.16     # rad: give up beyond this, if still moving away from upright
+    catch_angle: 0.4          # rad: during a jump the LQR takes over here (tuned: scripts/tune_catch.py)
+    q_angle: 100.0
+    q_rate: 0.3               # tuned (scripts/tune_controller.py): 18% smoother torque
+    q_wheel_speed: 1.0e-4
+    r_torque: 100.0
+    angle_offset: 0.0         # MEASURE: the estimated tilt at the true balance point [rad]
+    lqr_delay_steps: 0        # >0: delay-aware LQR (commands land this many 5 ms steps late)
+
+    # Jump-up needs a strong, fast brake (see README); off by default on hardware.
+    auto_jump_up: false
+    rest_time: 1.0
+    spin_up_torque: 0.03
+    jump_margin: 1.1
+    jump_margin_step: 0.05
+    jump_margin_max: 1.4      # never spin faster than this x the ideal speed
+    spin_settle_time: 0.15    # s the wheel speed must hold within spin_tolerance before braking
+    spin_tolerance: 2.0       # rad/s
+    spin_timeout: 4.0         # s, then brake anyway if within 1.5 x spin_tolerance
+    jump_timeout: 1.5

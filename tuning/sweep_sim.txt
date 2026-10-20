@@ -1,0 +1,52 @@
+Profile sim (max torque 0.25 N m): evaluating 325 tunings x 6 runs ...
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+/usr/lib/python3/dist-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/usr/lib/python3/dist-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+
+Baseline (current config):
+  Q=(100,1,0.0001) R=100 tau=0.3 delay-aware=0         tilt_rms=0.075° du_rms=1.01mNm peak=2.16° settle=0.75s max_delay=11 fails=0/6
+
+Best 12 by score (tilt error, smoothness, push recovery, delay margin):
+  score=  2.77  Q=(300,0.3,0.0001) R=100 tau=0.5 delay-aware=0       tilt_rms=0.072° du_rms=1.02mNm peak=2.13° settle=0.59s max_delay=9 fails=0/6
+  score=  2.78  Q=(100,0.3,0.0001) R=100 tau=0.5 delay-aware=0       tilt_rms=0.069° du_rms=0.83mNm peak=2.28° settle=0.80s max_delay=10 fails=0/6
+  score=  2.84  Q=(100,0.3,0.0001) R=100 tau=0.3 delay-aware=0       tilt_rms=0.076° du_rms=0.89mNm peak=2.25° settle=0.73s max_delay=10 fails=0/6
+  score=  2.86  Q=(300,1,0.0001) R=100 tau=0.5 delay-aware=0         tilt_rms=0.072° du_rms=1.12mNm peak=2.07° settle=0.61s max_delay=10 fails=0/6
+  score=  2.87  Q=(100,0.3,0.0001) R=100 tau=0.5 delay-aware=1       tilt_rms=0.072° du_rms=0.87mNm peak=2.33° settle=0.82s max_delay=11 fails=0/6
+  score=  2.87  Q=(30,0.3,0.0001) R=100 tau=0.3 delay-aware=0        tilt_rms=0.080° du_rms=0.78mNm peak=2.37° settle=0.82s max_delay=11 fails=0/6
+  score=  2.88  Q=(30,0.3,0.0001) R=100 tau=0.5 delay-aware=0        tilt_rms=0.075° du_rms=0.73mNm peak=2.40° settle=0.92s max_delay=11 fails=0/6
+  score=  2.89  Q=(100,1,0.0001) R=100 tau=0.5 delay-aware=0         tilt_rms=0.069° du_rms=0.94mNm peak=2.19° settle=0.82s max_delay=11 fails=0/6
+  score=  2.89  Q=(300,0.3,0.0001) R=100 tau=0.5 delay-aware=1       tilt_rms=0.074° du_rms=1.06mNm peak=2.17° settle=0.66s max_delay=9 fails=0/6
+  score=  2.91  Q=(10,0.3,0.0001) R=100 tau=0.3 delay-aware=0        tilt_rms=0.083° du_rms=0.73mNm peak=2.42° settle=0.86s max_delay=12 fails=0/6
+  score=  2.91  Q=(30,0.3,0.0001) R=100 tau=0.15 delay-aware=0       tilt_rms=0.086° du_rms=0.91mNm peak=2.30° settle=0.69s max_delay=11 fails=0/6
+  score=  2.93  Q=(100,0.3,0.0001) R=100 tau=0.3 delay-aware=1       tilt_rms=0.078° du_rms=0.93mNm peak=2.30° settle=0.76s max_delay=11 fails=0/6
+
+Baseline score: 2.95

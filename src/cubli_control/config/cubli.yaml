@@ -1,0 +1,52 @@
+cubli_sim:
+  ros__parameters:
+    rate_hz: 200.0
+    substeps: 5
+    initial_angle: -0.785398  # rad; -0.785 = lying on a face (jump-up demo), 0.1 = start near upright
+    max_torque: 0.25          # N m
+    command_timeout: 0.1      # s, zero torque if the controller goes quiet
+    brake_efficiency: 1.0     # < 1 models momentum lost in a real brake
+    start_timeout: 5.0        # s, physics waits this long for the controller's first command
+
+    # Part 2: sensor models (MPU6050-style IMU + quadrature encoder).
+    # sensors:=false in the launch publishes the true state instead (Phase 1 behaviour).
+    imu_offset: 0.106         # m, edge -> IMU along body z (cube centre)
+    gyro_noise_std: 0.003     # rad/s
+    gyro_bias: 0.02           # rad/s, removed by the estimator's start-up calibration
+    accel_noise_std: 0.04     # m/s^2
+    accel_bias_y: 0.03        # m/s^2, shows up as a ~0.17 deg tilt error
+    accel_bias_z: -0.05       # m/s^2
+    encoder_cpr: 400          # counts per wheel revolution
+
+cubli_estimator:
+  ros__parameters:
+    time_constant: 0.5        # s, tuned: complementary filter, gyro below / accelerometer above
+    imu_offset: 0.106         # m, for the lever-arm (centripetal/tangential) compensation
+    calib_samples: 200        # IMU samples averaged for the gyro bias (1 s, cube still)
+    wheel_speed_window: 8     # encoder samples per wheel-speed difference (40 ms)
+
+cubli_controller:
+  ros__parameters:
+    control_rate_hz: 200.0    # must match the sim rate (used to discretise the model)
+    max_torque: 0.25
+    engage_angle: 0.2         # rad, LQR takes over inside this tilt
+    disengage_angle: 0.3      # rad: give up beyond this, if still moving away from upright
+    catch_angle: 0.4          # rad: during a jump the LQR takes over here (tuned: scripts/tune_catch.py)
+    q_angle: 100.0
+    q_rate: 0.3               # tuned (scripts/tune_controller.py): 18% smoother torque
+    q_wheel_speed: 1.0e-4
+    r_torque: 100.0
+    angle_offset: 0.0         # rad, calibration offset for the upright angle
+    lqr_delay_steps: 0        # >0: delay-aware LQR (commands land this many 5 ms steps late)
+
+    # Jump-up: spin the wheel, brake it, catch the cube on its edge
+    auto_jump_up: true
+    rest_time: 1.0            # s lying still before a jump
+    spin_up_torque: 0.03      # N m, gentle spin-up so it is visible in RViz
+    jump_margin: 1.1          # x the ideal wheel speed (~68 rad/s)
+    jump_margin_step: 0.05    # added after each failed jump
+    jump_margin_max: 1.4      # never spin faster than this x the ideal speed
+    spin_settle_time: 0.15    # s the wheel speed must hold within spin_tolerance before braking
+    spin_tolerance: 2.0       # rad/s
+    spin_timeout: 4.0         # s, then brake anyway if within 1.5 x spin_tolerance
+    jump_timeout: 1.5         # s to reach catch_angle after braking

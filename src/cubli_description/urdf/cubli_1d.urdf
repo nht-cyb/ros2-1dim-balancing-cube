@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!--
+  1D Cubli: a 15 cm cube that balances on one edge using a single reaction wheel.
+
+  The balancing edge lies along the world X axis at the origin.
+  body_joint  : rotation of the cube about that edge (0 = centre of mass straight above the edge,
+                +/-45 deg = cube lying flat on a face).
+  wheel_joint : rotation of the reaction wheel relative to the cube.
+
+  Geometry here is for visualisation; the dynamics parameters live in cubli_control/model.py.
+-->
+<robot name="cubli_1d">
+
+  <material name="frame_grey"><color rgba="0.75 0.75 0.78 0.45"/></material>
+  <material name="wheel_blue"><color rgba="0.15 0.35 0.85 1.0"/></material>
+  <material name="marker_orange"><color rgba="1.0 0.55 0.1 1.0"/></material>
+  <material name="floor_dark"><color rgba="0.3 0.3 0.3 1.0"/></material>
+
+  <link name="world"/>
+
+  <link name="floor">
+    <visual>
+      <origin xyz="0 0 -0.005" rpy="0 0 0"/>
+      <geometry><box size="0.6 0.6 0.01"/></geometry>
+      <material name="floor_dark"/>
+    </visual>
+  </link>
+
+  <joint name="floor_joint" type="fixed">
+    <parent link="world"/>
+    <child link="floor"/>
+  </joint>
+
+  <!-- Cube body. Its frame sits on the balancing edge; the cube centre is a*sqrt(2)/2 = 0.106 m above it. -->
+  <link name="body">
+    <visual>
+      <origin xyz="0 0 0.10607" rpy="0.785398 0 0"/>
+      <geometry><box size="0.15 0.15 0.15"/></geometry>
+      <material name="frame_grey"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.075" rpy="0 0 0"/>
+      <mass value="0.419"/>
+      <inertia ixx="3.34e-3" ixy="0" ixz="0" iyy="1.0e-3" iyz="0" izz="1.0e-3"/>
+    </inertial>
+  </link>
+
+  <joint name="body_joint" type="revolute">
+    <parent link="world"/>
+    <child link="body"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.785398" upper="0.785398" effort="10" velocity="50"/>
+  </joint>
+
+  <!-- Reaction wheel, axis along X, at the cube centre. -->
+  <link name="wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.570796 0"/>
+      <geometry><cylinder radius="0.06" length="0.012"/></geometry>
+      <material name="wheel_blue"/>
+    </visual>
+    <!-- Spoke so wheel rotation is visible in RViz -->
+    <visual>
+      <origin xyz="0.007 0 0.03" rpy="0 0 0"/>
+      <geometry><box size="0.003 0.012 0.06"/></geometry>
+      <material name="marker_orange"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.204"/>
+      <inertia ixx="0.57e-3" ixy="0" ixz="0" iyy="0.3e-3" iyz="0" izz="0.3e-3"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_joint" type="continuous">
+    <parent link="body"/>
+    <child link="wheel"/>
+    <origin xyz="0 0 0.10607" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+
+</robot>

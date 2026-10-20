@@ -1,0 +1,6 @@
+profile sim, 20 seeds x delays 1-3 (+0-2 steps jitter), mean ± 95% CI
+baseline Q=(100,1,1e-4) tau=0.3      falls 0/60  tilt_rms 0.066±0.003°  du_rms 1.020±0.018 mNm  peak 2.296±0.084°  settle 0.714±0.019 s
+A Q=(300,0.3,1e-4) tau=0.5           falls 0/60  tilt_rms 0.073±0.004°  du_rms 1.048±0.026 mNm  peak 2.256±0.085°  settle 0.552±0.039 s
+B Q=(100,0.3,1e-4) tau=0.5           falls 0/60  tilt_rms 0.061±0.003°  du_rms 0.837±0.010 mNm  peak 2.409±0.085°  settle 0.766±0.022 s
+C Q=(100,1,1e-4) tau=0.5             falls 0/60  tilt_rms 0.061±0.004°  du_rms 0.952±0.014 mNm  peak 2.305±0.085°  settle 0.798±0.021 s
+D Q=(100,0.3,1e-4) tau=0.5 delay1    falls 0/60  tilt_rms 0.063±0.003°  du_rms 0.876±0.009 mNm  peak 2.452±0.084°  settle 0.812±0.018 s
